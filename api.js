@@ -1,5 +1,5 @@
 
-var Db  = require('./dboperations');
+var Db = require('./dboperations');
 var Order = require('./order');
 var ClientDetails = require('./clientdetails');
 var Register = require('./register');
@@ -18,70 +18,70 @@ app.use(cors());
 app.use('/api', router);
 
 // create a middleware
-router.use((request,response,next)=>{
-   console.log('middleware');
-   next();
+router.use((request, response, next) => {
+    console.log('middleware');
+    next();
 })
 // OrderTableAPI
-router.route('/orders').get((request,response)=>{
-// console.log(result);
+router.route('/orders').get((request, response) => {
+    // console.log(result);
     dboperations.getOrders().then(result => {
-       response.json(result[0]);
+        response.json(result[0]);
     })
 
 })
 
-router.route('/orders/:id').get((request,response)=>{
+router.route('/orders/:id').get((request, response) => {
 
     dboperations.getOrder(request.params.id).then(result => {
-       response.json(result[0]);
+        response.json(result[0]);
     })
 
 })
 
-router.route('/orders').post((request,response)=>{
+router.route('/orders').post((request, response) => {
 
-    let order = {...request.body}
+    let order = { ...request.body }
     console.log(order);
     dboperations.addOrder(order).then(result => {
-       response.status(201).json(result);
+        response.status(201).json(result);
     })
 
 })
 //***********ClientDetailTableAPI********/
 
-router.route('/clientdetails').get((request,response)=>{
+router.route('/clientdetails').get((request, response) => {
     // console.log(result);
-        dboperations.getClientDetails().then(result => {
-           response.json(result[0]);
-        })
-    
+    dboperations.getClientDetails().then(result => {
+        response.json(result[0]);
     })
-    
-    router.route('/clientdetails/:id').get((request,response)=>{
-    
-        dboperations.getClientDetail(request.params.id).then(result => {
-           response.json(result[0]);
-        })
-    
+
+})
+
+router.route('/clientdetails/:id').get((request, response) => {
+
+    dboperations.getClientDetail(request.params.id).then(result => {
+        response.json(result[0]);
     })
-    
-    router.route('/clientdetails').post((request,response)=>{
-    
-        let detailslist = {...request.body}
-        console.log(detailslist);
-        dboperations.addClientDetails(detailslist).then(result => {
-           response.status(201).json(result);
-        })
-    
+
+})
+
+router.route('/clientdetails').post((request, response) => {
+
+    let detailslist = { ...request.body }
+    console.log(detailslist);
+    dboperations.addClientDetails(detailslist).then(result => {
+        response.status(201).json(result);
     })
-    router.route('/register').post((request,response)=>{
-        let detailstoadd = {...request.body}
-        console.log(detailstoadd);
-        dboperations.addRegisterationDetails(detailstoadd).then(result =>{
-            response.status(201).json(result);
-        })
+
+})
+router.route('/register').post((request, response) => {
+    let detailstoadd = { ...request.body }
+    console.log(detailstoadd);
+    dboperations.addRegisterationDetails(detailstoadd).then(result => {
+        response.status(201).json(result);
     })
+})
 
 
 var port = process.env.PORT || 8090;
