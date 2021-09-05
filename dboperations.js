@@ -96,7 +96,33 @@ async function addClientDetails(clientdetails) {
 
 }
 
+async function addRegisterationDetails(registerdetails) {
 
+    try {
+        let pool = await sql.connect(config);
+        let insertRegisterDetails = await pool.request()
+            // .input('Id', sql.Int, clientdetails.Id)
+            .input('firstName', sql.NVarChar, registerdetails.firstName)
+            .input('lastName', sql.NVarChar, registerdetails.lastName)
+            .input('companyName', sql.NVarChar, registerdetails.companyName)
+            .input('address', sql.NVarChar, registerdetails.address)
+            .input('address2', sql.NVarChar, registerdetails.address2)
+            .input('city', sql.NVarChar, registerdetails.city)
+            .input('province', sql.NVarChar, registerdetails.province)
+            .input('country', sql.NVarChar, registerdetails.country)
+            .input('postalCode', sql.NVarChar, registerdetails.postalCode)
+            .input('emailId', sql.NVarChar, registerdetails.emailId)
+            .input('contactNumber', sql.NVarChar, registerdetails.contactNumber)
+            .input('mobileNumber', sql.NVarChar, registerdetails.mobileNumber)
+            .input('image', sql.NVarChar, registerdetails.image)
+            .execute('InsertRegistrationDetails');
+        return insertRegisterDetails.recordsets;
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+}
 module.exports = {
     getOrders: getOrders,
     getOrder : getOrder,
@@ -104,4 +130,5 @@ module.exports = {
     getClientDetails:getClientDetails,
     getClientDetail:getClientDetail,
     addClientDetails:addClientDetails,
+    addRegisterationDetails:addRegisterationDetails,
 }

@@ -2,6 +2,7 @@
 var Db  = require('./dboperations');
 var Order = require('./order');
 var ClientDetails = require('./clientdetails');
+var Register = require('./register');
 const dboperations = require('./dboperations');
 
 var express = require('express');
@@ -73,6 +74,13 @@ router.route('/clientdetails').get((request,response)=>{
            response.status(201).json(result);
         })
     
+    })
+    router.route('/register').post((request,response)=>{
+        let detailstoadd = {...request.body}
+        console.log(detailstoadd);
+        dboperations.addRegisterationDetails(detailstoadd).then(result =>{
+            response.status(201).json(result);
+        })
     })
 
 
