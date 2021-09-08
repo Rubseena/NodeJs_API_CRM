@@ -10,6 +10,7 @@ class ClientDetails{
         AddressLine3,
         City,
         State,
+        image,
         Country){
         this.Id = Id; 
         this.ClientName = ClientName; 
@@ -21,6 +22,7 @@ class ClientDetails{
         this.AddressLine3 = AddressLine3;
         this.City = City;
         this.State = State;
+        this.image = image;
         this.Country = Country;
     }
 }

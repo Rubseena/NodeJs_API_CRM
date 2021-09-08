@@ -51,7 +51,8 @@ async function addOrder(orderList) {
 async function getClientDetails() {
     try {
         let con = await sql.connect(config);
-        let clients = await con.request().query("SELECT * from ClientDetails");
+        let clients = await con.request().query("SELECT * from Register");
+        console.log(clients);
         return clients.recordsets;
     }
     catch (error) {
@@ -63,7 +64,7 @@ async function getClientDetail(detailId) {
         let con = await sql.connect(config);
         let clients = await con.request()
             .input('input_parameter', sql.Int, detailId)
-            .query("SELECT * from ClientDetails where Id = @input_parameter");
+            .query("SELECT * from Register where Id = @input_parameter");
         return clients.recordsets;
 
     }
@@ -71,30 +72,30 @@ async function getClientDetail(detailId) {
         console.log(error);
     }
 }
-async function addClientDetails(clientdetails) {
+// async function addClientDetails(clientdetails) {
 
-    try {
-        let pool = await sql.connect(config);
-        let insertClientDetails = await pool.request()
-            // .input('Id', sql.Int, clientdetails.Id)
-            .input('ClientName', sql.NVarChar, clientdetails.ClientName)
-            .input('ContactPerson', sql.NVarChar, clientdetails.ContactPerson)
-            .input('EmailId', sql.NVarChar, clientdetails.EmailId)
-            .input('MobileNumber', sql.NVarChar, clientdetails.MobileNumber)
-            .input('AddressLine1', sql.NVarChar, clientdetails.AddressLine1)
-            .input('AddressLine2', sql.NVarChar, clientdetails.AddressLine2)
-            .input('AddressLine3', sql.NVarChar, clientdetails.AddressLine3)
-            .input('City', sql.NVarChar, clientdetails.City)
-            .input('State', sql.NVarChar, clientdetails.State)
-            .input('Country', sql.NVarChar, clientdetails.Country)
-            .execute('InsertClientDetails');
-        return insertClientDetails.recordsets;
-    }
-    catch (err) {
-        console.log(err);
-    }
+//     try {
+//         let pool = await sql.connect(config);
+//         let insertClientDetails = await pool.request()
+//             // .input('Id', sql.Int, clientdetails.Id)
+//             .input('ClientName', sql.NVarChar, clientdetails.ClientName)
+//             .input('ContactPerson', sql.NVarChar, clientdetails.ContactPerson)
+//             .input('EmailId', sql.NVarChar, clientdetails.EmailId)
+//             .input('MobileNumber', sql.NVarChar, clientdetails.MobileNumber)
+//             .input('AddressLine1', sql.NVarChar, clientdetails.AddressLine1)
+//             .input('AddressLine2', sql.NVarChar, clientdetails.AddressLine2)
+//             .input('AddressLine3', sql.NVarChar, clientdetails.AddressLine3)
+//             .input('City', sql.NVarChar, clientdetails.City)
+//             .input('State', sql.NVarChar, clientdetails.State)
+//             .input('Country', sql.NVarChar, clientdetails.Country)
+//             .execute('InsertClientDetails');
+//         return insertClientDetails.recordsets;
+//     }
+//     catch (err) {
+//         console.log(err);
+//     }
 
-}
+// }
 
 async function addRegisterationDetails(registerdetails) {
 
@@ -129,6 +130,6 @@ module.exports = {
     addOrder : addOrder,
     getClientDetails:getClientDetails,
     getClientDetail:getClientDetail,
-    addClientDetails:addClientDetails,
+    // addClientDetails:addClientDetails,
     addRegisterationDetails:addRegisterationDetails,
 }

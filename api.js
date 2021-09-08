@@ -61,7 +61,9 @@ router.route('/clientdetails').get((request, response) => {
 router.route('/clientdetails/:id').get((request, response) => {
 
     dboperations.getClientDetail(request.params.id).then(result => {
+        // console.log(result[0]);
         response.json(result[0]);
+        
     })
 
 })
