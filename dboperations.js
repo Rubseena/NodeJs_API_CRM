@@ -124,6 +124,25 @@ async function addRegisterationDetails(registerdetails) {
     }
 
 }
+
+async function addCalls(calldetails) {
+
+    try {
+        let pool = await sql.connect(config);
+        let insertCallDetails = await pool.request()
+            // .input('Id', sql.Int, clientdetails.Id)
+            .input('UserId', sql.NVarChar, calldetails.UserId)
+            .input('EngagementStatus', sql.NVarChar, calldetails.EngagementStatus)
+            .input('Description', sql.NVarChar, calldetails.Description)
+            .input('NextCallDate', sql.NVarChar, calldetails.NextCallDate)         
+            .execute('InsertCallDetails');
+        return insertCallDetails.recordsets;
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+}
 module.exports = {
     getOrders: getOrders,
     getOrder : getOrder,
@@ -132,4 +151,5 @@ module.exports = {
     getClientDetail:getClientDetail,
     // addClientDetails:addClientDetails,
     addRegisterationDetails:addRegisterationDetails,
+    addCalls:addCalls,
 }

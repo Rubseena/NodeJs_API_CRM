@@ -3,6 +3,8 @@ var Db = require('./dboperations');
 var Order = require('./order');
 var ClientDetails = require('./clientdetails');
 var Register = require('./register');
+var Calls = require('./calls');
+
 const dboperations = require('./dboperations');
 
 var express = require('express');
@@ -10,7 +12,6 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var app = express();
 var router = express.Router();
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -28,7 +29,6 @@ router.route('/orders').get((request, response) => {
     dboperations.getOrders().then(result => {
         response.json(result[0]);
     })
-
 })
 
 router.route('/orders/:id').get((request, response) => {
@@ -36,17 +36,14 @@ router.route('/orders/:id').get((request, response) => {
     dboperations.getOrder(request.params.id).then(result => {
         response.json(result[0]);
     })
-
 })
 
 router.route('/orders').post((request, response) => {
-
     let order = { ...request.body }
     console.log(order);
     dboperations.addOrder(order).then(result => {
         response.status(201).json(result);
     })
-
 })
 //***********ClientDetailTableAPI********/
 
@@ -55,17 +52,12 @@ router.route('/clientdetails').get((request, response) => {
     dboperations.getClientDetails().then(result => {
         response.json(result[0]);
     })
-
 })
 
 router.route('/clientdetails/:id').get((request, response) => {
-
     dboperations.getClientDetail(request.params.id).then(result => {
-        // console.log(result[0]);
-        response.json(result[0]);
-        
+        response.json(result[0]);        
     })
-
 })
 
 router.route('/clientdetails').post((request, response) => {
@@ -77,6 +69,7 @@ router.route('/clientdetails').post((request, response) => {
     })
 
 })
+//***********RegisterTableAPI********/
 router.route('/register').post((request, response) => {
     let detailstoadd = { ...request.body }
     console.log(detailstoadd);
@@ -84,12 +77,25 @@ router.route('/register').post((request, response) => {
         response.status(201).json(result);
     })
 })
-
+//***********CallDetailsTableAPI********/
+router.route('/mycalls').post((request, response) => {
+    let calls = { ...request.body }
+    console.log(calls);
+    dboperations.addCalls(calls).then(result => {
+        response.status(201).json(result);
+    })
+})
+router.route('/mycalls').get((request, response) => {
+    dboperations.getCallDetails().then(result => {
+        response.json(result[0]);
+    })
+})
+router.route('/mycalls/:id').get((request, response) => {
+    dboperations.getCallDetailsById(request.params.id).then(result => {
+        response.json(result[0]);        
+    })
+})
 
 var port = process.env.PORT || 8090;
 app.listen(port);
 console.log('Order API is running at ' + port);
-
-// dboperations.getOrders().then(result => {
-//     console.log(result);
-// })
