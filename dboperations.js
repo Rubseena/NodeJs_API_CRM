@@ -127,7 +127,8 @@ async function addRegisterationDetails(registerdetails) {
 async function getCallDetails() {
     try {
         let con = await sql.connect(config);
-        let clients = await con.request().query("SELECT * from Calls");
+        let clients = await con.request().
+        query("SELECT Calls.UserId as Id, Register.firstName + ' ' + Register.lastName as name FROM Calls INNER JOIN  Register ON Calls.UserId = Register.Id");
         console.log(clients);
         return clients.recordsets;
     }
@@ -155,10 +156,10 @@ async function addCalls(calldetails) {
         let insertCallDetails = await pool.request()
             // .input('Id', sql.Int, clientdetails.Id)
             .input('UserId', sql.NVarChar, calldetails.UserId)
-            .input('ClientDetails', sql.NVarChar, calldetails.ClientDetails)
+            // .input('ClientDetails', sql.NVarChar, calldetails.ClientDetails)
             .input('EngagementStatus', sql.NVarChar, calldetails.EngagementStatus)
             .input('Description', sql.NVarChar, calldetails.Description)
-            .input('NextCallDate', sql.NVarChar, calldetails.NextCallDate)         
+            .input('NextCallDateTime', sql.NVarChar, calldetails.NextCallDateTime)         
             .execute('InsertCallDetails');
         return insertCallDetails.recordsets;
     }

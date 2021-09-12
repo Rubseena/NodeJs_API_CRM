@@ -63,7 +63,7 @@ router.route('/clientdetails/:id').get((request, response) => {
 router.route('/clientdetails').post((request, response) => {
 
     let detailslist = { ...request.body }
-    console.log(detailslist);
+    // console.log(detailslist);
     dboperations.addClientDetails(detailslist).then(result => {
         response.status(201).json(result);
     })
