@@ -124,7 +124,30 @@ async function addRegisterationDetails(registerdetails) {
     }
 
 }
+async function getCallDetails() {
+    try {
+        let con = await sql.connect(config);
+        let clients = await con.request().query("SELECT * from Calls");
+        console.log(clients);
+        return clients.recordsets;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+async function getCallDetailsById(detailId) {
+    try {
+        let con = await sql.connect(config);
+        let clients = await con.request()
+            .input('input_parameter', sql.Int, detailId)
+            .query("SELECT * from Calls where Id = @input_parameter");
+        return clients.recordsets;
 
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 async function addCalls(calldetails) {
 
     try {
@@ -132,6 +155,7 @@ async function addCalls(calldetails) {
         let insertCallDetails = await pool.request()
             // .input('Id', sql.Int, clientdetails.Id)
             .input('UserId', sql.NVarChar, calldetails.UserId)
+            .input('ClientDetails', sql.NVarChar, calldetails.ClientDetails)
             .input('EngagementStatus', sql.NVarChar, calldetails.EngagementStatus)
             .input('Description', sql.NVarChar, calldetails.Description)
             .input('NextCallDate', sql.NVarChar, calldetails.NextCallDate)         
@@ -143,6 +167,27 @@ async function addCalls(calldetails) {
     }
 
 }
+async function updateCalls(Id,calldetails) {
+
+    try {
+        let pool = await sql.connect(config);
+        let updateCallDetails = await pool.request()
+            .input('Id', sql.Int, Id)
+            .input('UserId', sql.NVarChar, calldetails.UserId)
+            .input('ClientDetails', sql.NVarChar, calldetails.ClientDetails)
+            .input('EngagementStatus', sql.NVarChar, calldetails.EngagementStatus)
+            .input('Description', sql.NVarChar, calldetails.Description)
+            .input('NextCallDate', sql.NVarChar, calldetails.NextCallDate)         
+            .execute('UpdateCalls');
+        return updateCallDetails.recordsets;
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+}
+
+
 module.exports = {
     getOrders: getOrders,
     getOrder : getOrder,
@@ -152,4 +197,7 @@ module.exports = {
     // addClientDetails:addClientDetails,
     addRegisterationDetails:addRegisterationDetails,
     addCalls:addCalls,
+    getCallDetails:getCallDetails,
+    getCallDetailsById:getCallDetailsById,
+    updateCalls:updateCalls,
 }

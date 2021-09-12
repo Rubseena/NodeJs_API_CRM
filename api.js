@@ -95,7 +95,29 @@ router.route('/mycalls/:id').get((request, response) => {
         response.json(result[0]);        
     })
 })
-
+router.route('/mycalls/:id').put((request, response) => {
+    let calls = {...request.body}
+    console.log(calls);
+    dboperations.findByIdAndUpdate(request.params.id, calls).then(result=>  {
+        response.status(201).json(result)
+        // .catch(err => {
+        //     res.status(400).send("unable to save to database");
+        //     });
+    });
+});
+// router.put('/mycalls/:id', function (request, response) {
+//     dboperations.findByIdAndUpdate(request.params.id, request.body, {new: true}, function (err, result) {
+//         if (err) return res.status(500).send("There was a problem updating the user.");
+//         response.status(201).json(result);
+//     });
+// });
+// DELETES A USER FROM THE DATABASE
+// router.delete('/:id', function (req, res) {
+//     User.findByIdAndRemove(req.params.id, function (err, user) {
+//         if (err) return res.status(500).send("There was a problem deleting the user.");
+//         res.status(200).send("User: "+ user.name +" was deleted.");
+//     });
+// });
 var port = process.env.PORT || 8090;
 app.listen(port);
 console.log('Order API is running at ' + port);
