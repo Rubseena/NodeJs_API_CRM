@@ -86,7 +86,13 @@ router.route('/mycalls').post((request, response) => {
     })
 })
 router.route('/mycalls').get((request, response) => {
+    dboperations.getAllCallDetails().then(result => {
+        response.json(result[0]);
+    })
+})
+router.route('/mycalls').get((request, response) => {
     dboperations.getCallDetails().then(result => {
+        console.log(result);
         response.json(result[0]);
     })
 })

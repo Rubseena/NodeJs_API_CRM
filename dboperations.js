@@ -124,6 +124,18 @@ async function addRegisterationDetails(registerdetails) {
     }
 
 }
+async function getAllCallDetails() {
+    try {
+        let con = await sql.connect(config);
+        let clients = await con.request().
+        query("SELECT Calls.UserId as Id,Calls.EngagementStatus,Calls.NextCallDateTime,Register.image, Register.firstName + ' ' + Register.lastName as name ,Register.city FROM Calls INNER JOIN  Register ON Calls.UserId = Register.Id");
+       console.log(clients);
+        return clients.recordsets;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 async function getCallDetails() {
     try {
         let con = await sql.connect(config);
@@ -201,4 +213,5 @@ module.exports = {
     getCallDetails:getCallDetails,
     getCallDetailsById:getCallDetailsById,
     updateCalls:updateCalls,
+    getAllCallDetails:getAllCallDetails,
 }
