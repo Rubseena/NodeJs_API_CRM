@@ -12,12 +12,19 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var app = express();
 var router = express.Router();
+const multer = require("multer");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', router);
 
+const handleError = (err, res) => {
+    res
+      .status(500)
+      .contentType("text/plain")
+      .end("Oops! Something went wrong!");
+  };
 // create a middleware
 router.use((request, response, next) => {
     console.log('middleware');
@@ -40,7 +47,7 @@ router.route('/orders/:id').get((request, response) => {
 
 router.route('/orders').post((request, response) => {
     let order = { ...request.body }
-    console.log(order);
+    // console.log(order);
     dboperations.addOrder(order).then(result => {
         response.status(201).json(result);
     })
@@ -72,15 +79,18 @@ router.route('/clientdetails').post((request, response) => {
 //***********RegisterTableAPI********/
 router.route('/register').post((request, response) => {
     let detailstoadd = { ...request.body }
-    console.log(detailstoadd);
+    // console.log(detailstoadd);
     dboperations.addRegisterationDetails(detailstoadd).then(result => {
         response.status(201).json(result);
+
     })
 })
+
+
 //***********CallDetailsTableAPI********/
 router.route('/mycalls').post((request, response) => {
     let calls = { ...request.body }
-    console.log(calls);
+    // console.log(calls);
     dboperations.addCalls(calls).then(result => {
         response.status(201).json(result);
     })
@@ -90,20 +100,38 @@ router.route('/mycalls').get((request, response) => {
         response.json(result[0]);
     })
 })
-router.route('/mycalls').get((request, response) => {
-    dboperations.getCallDetails().then(result => {
-        console.log(result);
+// router.route('/updatecalls').get((request, response) => {
+//     dboperations.getAllCallDetailsNameList().then(result => {
+//         console.log("updateCalls result",result);
+//         response.json(result[0]);
+//     })
+// })
+// router.route('/mycalls').get((request, response) => {
+//     dboperations.getCallDetails().then(result => {
+//         // console.log(result);
+//         response.json(result[0]);
+//     })
+// })
+router.route('/updatecalls/:id').get((request, response) => {
+    dboperations.getAllCallDetailsNameList(request.params.id).then(result => {
+        // console.log(result);
         response.json(result[0]);
     })
 })
-router.route('/mycalls/:id').get((request, response) => {
-    dboperations.getCallDetailsById(request.params.id).then(result => {
-        response.json(result[0]);        
-    })
-})
-router.route('/mycalls/:id').put((request, response) => {
+router.route('/updatecalls/:id').put((request, response) => {
     let calls = {...request.body}
     console.log(calls);
+    dboperations.updateCalls(request.params.id, calls).then(result=>  {
+        console.log(result);
+        response.status(201).json(result)
+        // .catch(err => {
+        //     res.status(400).send("unable to save to database");
+        //     });
+    });
+});
+router.route('/mycalls/:id').put((request, response) => {
+    let calls = {...request.body}
+    // console.log(calls);
     dboperations.findByIdAndUpdate(request.params.id, calls).then(result=>  {
         response.status(201).json(result)
         // .catch(err => {
@@ -111,6 +139,13 @@ router.route('/mycalls/:id').put((request, response) => {
         //     });
     });
 });
+
+
+// router.route('/mycalls/:id').get((request, response) => {
+//     dboperations.getCallDetailsById(request.params.id).then(result => {
+//         response.json(result[0]);        
+//     })
+// })
 // router.put('/mycalls/:id', function (request, response) {
 //     dboperations.findByIdAndUpdate(request.params.id, request.body, {new: true}, function (err, result) {
 //         if (err) return res.status(500).send("There was a problem updating the user.");

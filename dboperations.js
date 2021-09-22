@@ -52,7 +52,7 @@ async function getClientDetails() {
     try {
         let con = await sql.connect(config);
         let clients = await con.request().query("SELECT * from Register");
-        console.log(clients);
+        // console.log(clients);
         return clients.recordsets;
     }
     catch (error) {
@@ -129,7 +129,20 @@ async function getAllCallDetails() {
         let con = await sql.connect(config);
         let clients = await con.request().
         query("SELECT Calls.UserId as Id,Calls.EngagementStatus,Calls.NextCallDateTime,Register.image, Register.firstName + ' ' + Register.lastName as name ,Register.city FROM Calls INNER JOIN  Register ON Calls.UserId = Register.Id");
-       console.log(clients);
+    //    console.log(clients);
+        return clients.recordsets;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+async function getAllCallDetailsNameList(detailId) {
+    try {
+        let con = await sql.connect(config);
+        let clients = await con.request()
+        .input('input_parameter', sql.Int, detailId)
+        .query(" SELECT Calls.Id,Calls.UserId,Register.firstName + ' ' + Register.lastName  as name ,Calls.Description,Calls.EngagementStatus,Calls.NextCallDateTime  FROM Calls INNER JOIN Register ON Calls.UserId = Register.Id where Calls.UserId = @input_parameter");
+    //    console.log(clients);
         return clients.recordsets;
     }
     catch (error) {
@@ -141,7 +154,7 @@ async function getCallDetails() {
         let con = await sql.connect(config);
         let clients = await con.request().
         query("SELECT Calls.UserId as Id, Register.firstName + ' ' + Register.lastName as name FROM Calls INNER JOIN  Register ON Calls.UserId = Register.Id");
-        console.log(clients);
+        // console.log(clients);
         return clients.recordsets;
     }
     catch (error) {
@@ -173,6 +186,7 @@ async function addCalls(calldetails) {
             .input('Description', sql.NVarChar, calldetails.Description)
             .input('NextCallDateTime', sql.NVarChar, calldetails.NextCallDateTime)         
             .execute('InsertCallDetails');
+
         return insertCallDetails.recordsets;
     }
     catch (err) {
@@ -180,25 +194,49 @@ async function addCalls(calldetails) {
     }
 
 }
-async function updateCalls(Id,calldetails) {
+async function updateCalls(Id,calldetails){
+    try{
+        let con = await sql.connect(config);
+        let updateCallDetails = await con.request()
+            .input('UserId', sql.Int, Id)
+            .input('EngagementStatus', sql.Int, calldetails.EngagementStatus)
+            .input('Description', sql.Int, calldetails.Description)
+            .input('NextCallDateTime', sql.Int, calldetails.NextCallDateTime)
 
-    try {
-        let pool = await sql.connect(config);
-        let updateCallDetails = await pool.request()
-            .input('Id', sql.Int, Id)
-            .input('UserId', sql.NVarChar, calldetails.UserId)
-            .input('ClientDetails', sql.NVarChar, calldetails.ClientDetails)
-            .input('EngagementStatus', sql.NVarChar, calldetails.EngagementStatus)
-            .input('Description', sql.NVarChar, calldetails.Description)
-            .input('NextCallDate', sql.NVarChar, calldetails.NextCallDate)         
-            .execute('UpdateCalls');
-        return updateCallDetails.recordsets;
+            // .input('input_parameter', sql.Int, calldetails)
+            // .input('input_parameter', sql.Int, calldetails)
+
+            .query("UPDATE Calls SET UserId =@UserId, EngagementStatus =@EngagementStatus,Description =@Description, NextCallDateTime = @NextCallDateTime where UserId=@UserId");
+            console.log("updateCallDetails : ",updateCallDetails);
+            console.log("updateCallDetails.recordsets : ",updateCallDetails.recordsets);
+            return updateCallDetails.recordsets;
+
     }
     catch (err) {
         console.log(err);
     }
-
 }
+// async function updateCalls(Id,calldetails) {
+//      try {
+//         let pool = await sql.connect(config);
+//         let updateCallDetails = await pool.request()
+//             // .input('Id', sql.Int, Id)
+//             .input('input_parameter', sql.Int, Id)
+//             .input('UserId', sql.NVarChar, calldetails.UserId)
+//             // .input('ClientDetails', sql.NVarChar, calldetails.ClientDetails)
+//             .input('EngagementStatus', sql.NVarChar, calldetails.EngagementStatus)
+//             .input('Description', sql.NVarChar, calldetails.Description)
+//             .input('NextCallDate', sql.NVarChar, calldetails.NextCallDate)         
+//             .execute('UpdateCalls');            
+//             console.log("updateCallDetails : ",updateCallDetails);
+//             console.log("updateCallDetails.recordsets : ",updateCallDetails.recordsets);
+//         return updateCallDetails.recordsets;
+//     }
+//     catch (err) {
+//         console.log(err);
+//     }
+
+// }
 
 
 module.exports = {
@@ -214,4 +252,5 @@ module.exports = {
     getCallDetailsById:getCallDetailsById,
     updateCalls:updateCalls,
     getAllCallDetails:getAllCallDetails,
+    getAllCallDetailsNameList:getAllCallDetailsNameList,
 }
