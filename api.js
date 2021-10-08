@@ -4,6 +4,7 @@ var Order = require('./order');
 var ClientDetails = require('./clientdetails');
 var Register = require('./register');
 var Calls = require('./calls');
+var updatecalls = require('./updatecalls');
 
 const dboperations = require('./dboperations');
 
@@ -30,28 +31,7 @@ router.use((request, response, next) => {
     console.log('middleware');
     next();
 })
-// OrderTableAPI
-router.route('/orders').get((request, response) => {
-    // console.log(result);
-    dboperations.getOrders().then(result => {
-        response.json(result[0]);
-    })
-})
 
-router.route('/orders/:id').get((request, response) => {
-
-    dboperations.getOrder(request.params.id).then(result => {
-        response.json(result[0]);
-    })
-})
-
-router.route('/orders').post((request, response) => {
-    let order = { ...request.body }
-    // console.log(order);
-    dboperations.addOrder(order).then(result => {
-        response.status(201).json(result);
-    })
-})
 //***********ClientDetailTableAPI********/
 
 router.route('/clientdetails').get((request, response) => {
@@ -100,33 +80,26 @@ router.route('/mycalls').get((request, response) => {
         response.json(result[0]);
     })
 })
-// router.route('/updatecalls').get((request, response) => {
-//     dboperations.getAllCallDetailsNameList().then(result => {
-//         console.log("updateCalls result",result);
-//         response.json(result[0]);
-//     })
-// })
-// router.route('/mycalls').get((request, response) => {
-//     dboperations.getCallDetails().then(result => {
-//         // console.log(result);
-//         response.json(result[0]);
-//     })
-// })
+router.route('/mycalls').get((request, response) => {
+    dboperations.getClientCallDetailsByStatusId(request.params.id).then(result => {
+        console.log("result : ", result)
+        response.json(result[0]);        
+    })
+})
+
 router.route('/updatecalls/:id').get((request, response) => {
     dboperations.getAllCallDetailsNameList(request.params.id).then(result => {
         // console.log(result);
         response.json(result[0]);
     })
 })
-router.route('/updatecalls/:id').put((request, response) => {
+router.route('/updatecalls').put((request, response) => {
     let calls = {...request.body}
-    console.log(calls);
-    dboperations.updateCalls(request.params.id, calls).then(result=>  {
+    console.log('updatecalls:put:',calls);
+    dboperations.updateCalls(calls).then(result=>  {
         console.log(result);
         response.status(201).json(result)
-        // .catch(err => {
-        //     res.status(400).send("unable to save to database");
-        //     });
+        
     });
 });
 router.route('/mycalls/:id').put((request, response) => {
@@ -134,31 +107,14 @@ router.route('/mycalls/:id').put((request, response) => {
     // console.log(calls);
     dboperations.findByIdAndUpdate(request.params.id, calls).then(result=>  {
         response.status(201).json(result)
-        // .catch(err => {
-        //     res.status(400).send("unable to save to database");
-        //     });
     });
 });
+router.route('/reminder').get((request, response) => {
+    dboperations.getReminderDetails().then(result => {
+        response.json(result[0]);
+    })
+})
 
-
-// router.route('/mycalls/:id').get((request, response) => {
-//     dboperations.getCallDetailsById(request.params.id).then(result => {
-//         response.json(result[0]);        
-//     })
-// })
-// router.put('/mycalls/:id', function (request, response) {
-//     dboperations.findByIdAndUpdate(request.params.id, request.body, {new: true}, function (err, result) {
-//         if (err) return res.status(500).send("There was a problem updating the user.");
-//         response.status(201).json(result);
-//     });
-// });
-// DELETES A USER FROM THE DATABASE
-// router.delete('/:id', function (req, res) {
-//     User.findByIdAndRemove(req.params.id, function (err, user) {
-//         if (err) return res.status(500).send("There was a problem deleting the user.");
-//         res.status(200).send("User: "+ user.name +" was deleted.");
-//     });
-// });
 var port = process.env.PORT || 8090;
 app.listen(port);
 console.log('Order API is running at ' + port);
